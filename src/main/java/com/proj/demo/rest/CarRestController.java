@@ -1,9 +1,11 @@
 package com.proj.demo.rest;
+
 import com.proj.demo.entity.Car;
 import jakarta.annotation.PostConstruct;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class CarRestController {
     // Define @PostConstruct to load the car data ... only oance!
 
     @PostConstruct
-    public void loadData(){
+    public void loadData() {
         theCars = new ArrayList<>();
 
         theCars.add(new Car("Volvo", "CX7"));
@@ -29,48 +31,21 @@ public class CarRestController {
 
     // Define endpoint for /cars - return a list of cars
     @GetMapping("/cars")
-    public List<Car> getCar(){
+    public List<Car> getCar() {
         return theCars;
     }
 
     // Define endpoint or "/students/{studentId}- return student at index
     @GetMapping("/cars/{carId}")
-    public Car getCar (@PathVariable int carId){
+    public Car getCar(@PathVariable int carId) {
 
         // just index into the list  ... keep it simple now
 
         // check the carId againlist size
-        if(carId >= theCars.size() || (carId < 0)){
+        if (carId >= theCars.size() || (carId < 0)) {
             throw new CarNotFoundException("Student id not found - " + carId);
         }
         return theCars.get(carId);
     }
-
-        // add an exception handle using @ExceptionHandle
-    @ExceptionHandler
-    public ResponseEntity<CarErrorResponse> handleException(CarNotFoundException exc){
-
-      // create a CarErrorResponse
-        CarErrorResponse error = new CarErrorResponse();
-        error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setMessage(exc.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-
-      // return ResponseEntity
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
